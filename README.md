@@ -1,0 +1,177 @@
+# 🔒 Redacto
+
+> AI-powered PII detection and redaction for text and documents — fast, accurate, and privacy-first.
+
+![Python](https://img.shields.io/badge/Python-3.10+-blue?style=flat-square&logo=python)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-green?style=flat-square&logo=fastapi)
+![Claude API](https://img.shields.io/badge/Claude-API-orange?style=flat-square)
+![License](https://img.shields.io/badge/License-MIT-lightgrey?style=flat-square)
+
+---
+
+## What It Does
+
+Redacto automatically identifies and redacts **Personally Identifiable Information (PII)** from unstructured text and documents. Paste raw text, upload a file, and get a clean, redacted version back — with full transparency on what was found and removed.
+
+Built for developers, compliance teams, and anyone handling sensitive data who needs a reliable, auditable redaction layer.
+
+---
+
+## What Gets Redacted
+
+| Category | Examples |
+| :--- | :--- |
+| Names | Full names, usernames |
+| Contact Info | Email addresses, phone numbers |
+| Location | Addresses, zip codes, cities |
+| Financial | Credit card numbers, bank accounts, SSNs |
+| Identity | Passport numbers, driver's license, national IDs |
+| Dates | Birthdates, appointment dates tied to identity |
+| Custom | User-defined patterns and entity types |
+
+---
+
+## How It Works
+
+```mermaid
+graph TD
+    A[Input Text or Document] --> B[PII Detection via Claude API]
+    B --> C[Entity Classification]
+    C --> D[Redaction + Audit Log]
+    D --> E[Clean Output + Report]
+```
+
+1. **Input** — Accepts raw text or document uploads (`.txt`, `.pdf`, `.docx`)
+2. **Detection** — Claude API identifies PII entities with context awareness, catching things regex alone misses
+3. **Classification** — Each entity is labeled by type and confidence level
+4. **Redaction** — Entities are replaced with labeled placeholders (e.g., `[NAME]`, `[EMAIL]`, `[SSN]`)
+5. **Audit Log** — A structured report lists every redacted item, its type, and its position in the original
+
+---
+
+## Example
+
+**Input:**
+
+```text
+Hi, my name is Jordan Lee. You can reach me at jordan.lee@email.com
+or call 555-847-2910. My SSN is 392-48-2910.
+```
+
+**Output:**
+
+```text
+Hi, my name is [NAME]. You can reach me at [EMAIL]
+or call [PHONE]. My SSN is [SSN].
+```
+
+**Audit Log:**
+
+```json
+[
+  { "type": "NAME",  "original": "Jordan Lee",           "position": [19, 29]   },
+  { "type": "EMAIL", "original": "jordan.lee@email.com", "position": [53, 74]   },
+  { "type": "PHONE", "original": "555-847-2910",         "position": [83, 95]   },
+  { "type": "SSN",   "original": "392-48-2910",          "position": [110, 121] }
+]
+```
+
+---
+
+## Tech Stack
+
+| Layer | Tool |
+| :--- | :--- |
+| Language | Python 3.10+ |
+| PII Detection | Claude API (Anthropic) |
+| Document Parsing | PyMuPDF, python-docx |
+| API Layer | FastAPI |
+| Frontend | *(Optional UI — in progress)* |
+
+---
+
+## Project Structure
+
+```
+pii-redactor/
+├── core/
+│   ├── detector.py         # Claude API PII detection
+│   ├── redactor.py         # Entity replacement logic
+│   └── audit.py            # Audit log generation
+├── parsers/
+│   ├── pdf_parser.py
+│   ├── docx_parser.py
+│   └── text_parser.py
+├── api/
+│   └── routes.py           # FastAPI endpoints
+├── models/
+│   └── entities.py         # PII entity schema
+├── tests/
+│   └── test_redactor.py
+├── .env.example
+├── config.py
+└── README.md
+```
+
+---
+
+## Setup
+
+```bash
+git clone https://github.com/yourusername/pii-redactor.git
+cd pii-redactor
+pip install -r requirements.txt
+```
+
+Copy the example env file and add your key:
+
+```bash
+cp .env.example .env
+```
+
+```env
+ANTHROPIC_API_KEY=your_key_here
+```
+
+Run the API:
+
+```bash
+uvicorn api.routes:app --reload
+```
+
+Or use it directly in Python:
+
+```python
+from core.detector import detect_pii
+from core.redactor import redact
+
+text = "Contact Sarah at sarah@example.com or 212-555-0199."
+entities = detect_pii(text)
+clean_text, audit_log = redact(text, entities)
+```
+
+---
+
+## API Endpoints
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `POST` | `/redact/text` | Redact PII from raw text |
+| `POST` | `/redact/file` | Redact PII from uploaded file |
+| `GET` | `/audit/{job_id}` | Retrieve audit log for a redaction job |
+
+---
+
+## Status
+
+| Module | Status |
+| :--- | :--- |
+| Text redaction | ✅ Complete |
+| PDF parsing | ✅ Complete |
+| DOCX parsing | ✅ Complete |
+| Audit logging | ✅ Complete |
+| FastAPI layer | ✅ Complete |
+| Frontend UI | 🔄 In progress |
+
+---
+
