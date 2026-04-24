@@ -2,6 +2,11 @@
 
 > AI-powered PII detection and redaction for text and documents — fast, accurate, and privacy-first.
 
+![Python](https://img.shields.io/badge/Python-3.10+-blue?style=flat-square&logo=python)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-green?style=flat-square&logo=fastapi)
+![Claude API](https://img.shields.io/badge/Claude-API-orange?style=flat-square)
+![License](https://img.shields.io/badge/License-MIT-lightgrey?style=flat-square)
+
 ---
 
 ## What It Does
@@ -15,7 +20,7 @@ Built for developers, compliance teams, and anyone handling sensitive data who n
 ## What Gets Redacted
 
 | Category | Examples |
-|---|---|
+| :--- | :--- |
 | Names | Full names, usernames |
 | Contact Info | Email addresses, phone numbers |
 | Location | Addresses, zip codes, cities |
@@ -28,16 +33,12 @@ Built for developers, compliance teams, and anyone handling sensitive data who n
 
 ## How It Works
 
-```
-Input Text / Document
-        ↓
-  PII Detection (Claude API)
-        ↓
-  Entity Classification
-        ↓
-  Redaction + Audit Log
-        ↓
-  Clean Output + Report
+```mermaid
+graph TD
+    A[Input Text or Document] --> B[PII Detection via Claude API]
+    B --> C[Entity Classification]
+    C --> D[Redaction + Audit Log]
+    D --> E[Clean Output + Report]
 ```
 
 1. **Input** — Accepts raw text or document uploads (`.txt`, `.pdf`, `.docx`)
@@ -51,23 +52,26 @@ Input Text / Document
 ## Example
 
 **Input:**
-```
+
+```text
 Hi, my name is Jordan Lee. You can reach me at jordan.lee@email.com
 or call 555-847-2910. My SSN is 392-48-2910.
 ```
 
 **Output:**
-```
+
+```text
 Hi, my name is [NAME]. You can reach me at [EMAIL]
 or call [PHONE]. My SSN is [SSN].
 ```
 
 **Audit Log:**
+
 ```json
 [
-  { "type": "NAME",  "original": "Jordan Lee",          "position": [19, 29]   },
-  { "type": "EMAIL", "original": "jordan.lee@email.com", "position": [53, 74]  },
-  { "type": "PHONE", "original": "555-847-2910",         "position": [83, 95]  },
+  { "type": "NAME",  "original": "Jordan Lee",           "position": [19, 29]   },
+  { "type": "EMAIL", "original": "jordan.lee@email.com", "position": [53, 74]   },
+  { "type": "PHONE", "original": "555-847-2910",         "position": [83, 95]   },
   { "type": "SSN",   "original": "392-48-2910",          "position": [110, 121] }
 ]
 ```
@@ -77,8 +81,8 @@ or call [PHONE]. My SSN is [SSN].
 ## Tech Stack
 
 | Layer | Tool |
-|---|---|
-| Language | Python |
+| :--- | :--- |
+| Language | Python 3.10+ |
 | PII Detection | Claude API (Anthropic) |
 | Document Parsing | PyMuPDF, python-docx |
 | API Layer | FastAPI |
@@ -104,6 +108,7 @@ pii-redactor/
 │   └── entities.py         # PII entity schema
 ├── tests/
 │   └── test_redactor.py
+├── .env.example
 ├── config.py
 └── README.md
 ```
@@ -118,10 +123,14 @@ cd pii-redactor
 pip install -r requirements.txt
 ```
 
-Set your environment variable:
+Copy the example env file and add your key:
 
 ```bash
-ANTHROPIC_API_KEY=your_key
+cp .env.example .env
+```
+
+```env
+ANTHROPIC_API_KEY=your_key_here
 ```
 
 Run the API:
@@ -146,7 +155,7 @@ clean_text, audit_log = redact(text, entities)
 ## API Endpoints
 
 | Method | Endpoint | Description |
-|---|---|---|
+| :--- | :--- | :--- |
 | `POST` | `/redact/text` | Redact PII from raw text |
 | `POST` | `/redact/file` | Redact PII from uploaded file |
 | `GET` | `/audit/{job_id}` | Retrieve audit log for a redaction job |
@@ -156,10 +165,18 @@ clean_text, audit_log = redact(text, entities)
 ## Status
 
 | Module | Status |
-|---|---|
+| :--- | :--- |
 | Text redaction | ✅ Complete |
 | PDF parsing | ✅ Complete |
 | DOCX parsing | ✅ Complete |
 | Audit logging | ✅ Complete |
 | FastAPI layer | ✅ Complete |
 | Frontend UI | 🔄 In progress |
+
+---
+
+## About
+
+Built by **ApMakes** — a TPM and builder focused on practical AI tools that solve real compliance and privacy problems.
+
+🌐 [Portfolio](#) · 🐙 [GitHub](https://github.com/yourusername)
