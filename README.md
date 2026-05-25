@@ -258,11 +258,3 @@ redacto/
 - [ ] Auto-delete output files after 24 hours
 
 ---
-
-## License
-
-MIT — use it, fork it, extend it.
-
----
-
-*Built with Claude · Made by [Apirith](https://github.com/Apirith)*
